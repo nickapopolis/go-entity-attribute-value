@@ -1,0 +1,41 @@
+{
+	"name": "Vehicle",
+	"fields": [
+		{
+			"name": "Make",
+			"type": "String"
+		},
+		{
+			"name": "Country",
+			"type": "String"
+		},
+		{
+			"name": "Year Made",
+			"type": "Year"
+		},
+		{
+			"name": "Date Inventoried",
+			"type": "Date"
+		},
+		{
+			"name": "Value",
+			"type": "Decimal"
+		}
+	],
+	"data": [
+		{
+			"Make": "Ford Aglia",
+			"Country": "USA",
+			"Year Made": 1990,
+			"Date Inventoried": "10/12/1990",
+			"Value": 12001.29
+		}, 
+		{
+			"Make": "Mazda 3",
+			"Country": "Japan",
+			"Year Made": 2003,
+			"Date Inventoried": "04/11/2005",
+			"Value": 15000.38
+		}
+	]
+}
