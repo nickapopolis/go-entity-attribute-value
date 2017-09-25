@@ -1,20 +1,33 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import * as reducers from '../reducers';
-
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
+import createHistory from 'history/createBrowserHistory';
+import { Route } from 'react-router';
+import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
+import Home from '../components/home.jsx';
+import Entity from '../components/entity.jsx';
+const history = createHistory();
+const middleware = routerMiddleware(history);
+const store = createStore(
+	combineReducers({
+		...reducers,
+		router: routerReducer
+	}),
+	applyMiddleware(thunk, middleware)
+);
 
 export default class App extends Component {
 	render() {
 		return (
 			<Provider store={store}>
-				<div>
-					<h1>Hello World!!!</h1>
-				</div>
+				<ConnectedRouter history={history}>
+					<div>
+						<Route exact path="/" component={Home} />
+						<Route path="/entity/new" component={Entity} />
+					</div>
+				</ConnectedRouter>
 			</Provider>
 		);
 	}
