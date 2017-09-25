@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,11 +10,37 @@ import (
 
 // Controller API route mux for Entity
 func Controller(router *mux.Router, db *gorm.DB) {
-	router.HandleFunc("/entity", restHandler).Methods("POST")
+	router.HandleFunc("/entity", indexHandler(db)).Methods("POST", "GET")
 }
-func restHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("restHandler")
-	//w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	//w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Entity rest")
+func indexHandler(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "POST":
+			createHandler(db, w, r)
+		case "GET":
+			listHandler(db, w, r)
+		}
+	}
+}
+func createHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	newEntity := Entity{}
+	err := decoder.Decode(&newEntity)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	db.NewRecord(newEntity)
+	db.Create(&newEntity)
+	if db.NewRecord(newEntity) {
+		http.Error(w, "Could not create Entity", 500)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newEntity)
+}
+func listHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	entities := []Entity{}
+	db.Find(&entities)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(entities)
 }

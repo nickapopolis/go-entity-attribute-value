@@ -7,14 +7,15 @@ import (
 //Entity is a struct for managing dynamic tables
 type Entity struct {
 	gorm.Model
-	Name   string
-	Fields []Field
+	Name   string  `json:"name"`
+	Fields []Field `json:"fields" gorm:"ForeignKey:EntityID"`
 }
 
 //Field is a struct for managing field metadata on dynamic tables
 type Field struct {
 	gorm.Model
-	Name string
+	Name     string `json:"name"`
+	EntityID uint
 }
 
 // EAV is a struct for managing field values of dynamic tables
