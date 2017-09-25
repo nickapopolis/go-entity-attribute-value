@@ -2,16 +2,31 @@
   "name": "public",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.jsx",
   "scripts": {
-    "watch": "webpack --watch ./index.js app.min.js",
-    "build": "webpack ./index.js app.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --open",
+    "build": "webpack"
   },
   "author": "Nick Tierney <nickapopolis@gmail.com> (http://github.com/Nickapopolis)",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.16",
+    "html-webpack-plugin": "^2.30.1",
     "lodash": "^4.17.4",
-    "webpack": "^3.2.0"
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "webpack": "^3.2.0",
+    "webpack-dev-server": "^2.8.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-plugin-react": "^7.4.0"
   }
 }

@@ -15,7 +15,7 @@ func Router(db *gorm.DB) {
 	router.HandleFunc("/", rootHandle)
 
 	//static files (until nginx)
-	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
+	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/dist", http.FileServer(http.Dir("./public/dist"))))
 
 	//api
 	apiRouter := router.PathPrefix("/api/1.0").Subrouter()
