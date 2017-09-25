@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {App} from './components/app.jsx';
+import App from './containers/app.jsx';
 
 ReactDOM.render(
-	<App name="Goodness kayode" />,
+	<App />,
 	document.getElementById('root')
 );
