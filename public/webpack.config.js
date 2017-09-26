@@ -16,7 +16,16 @@ var config = {
 	module: {
 		rules: [
 			{ test: /\.js$/, loader: require.resolve('babel-loader'), exclude: /node_modules/ },
-			{ test: /\.jsx$/, loader: require.resolve('babel-loader'), exclude: /node_modules/ }
+			{ test: /\.jsx$/, loader: require.resolve('babel-loader'), exclude: /node_modules/ },
+			{
+				test: /\.less$/, use: [{
+					loader: require.resolve('style-loader')
+				},{
+					loader: require.resolve('css-loader')
+				}, {
+					loader: require.resolve('less-loader')
+				}], exclude: /node_modules/
+			}
 		]
 	},
 	plugins: [

@@ -8,6 +8,9 @@ import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
 import Home from '../components/home.jsx';
 import Entity from '../components/entity.jsx';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import primary from 'material-ui/colors/blueGrey';
+import cyan from 'material-ui/colors/cyan';
 const history = createHistory();
 const middleware = routerMiddleware(history);
 const store = createStore(
@@ -18,15 +21,23 @@ const store = createStore(
 	applyMiddleware(thunk, middleware)
 );
 
+const theme = createMuiTheme({
+	palette: {
+		primary: primary,
+		secondary: cyan
+	},
+});
 export default class App extends Component {
 	render() {
 		return (
 			<Provider store={store}>
 				<ConnectedRouter history={history}>
-					<div>
-						<Route exact path="/" component={Home} />
-						<Route path="/entity/new" component={Entity} />
-					</div>
+					<MuiThemeProvider theme={theme}>
+						<div>
+							<Route exact path="/" component={Home} />
+							<Route path="/entity/new" component={Entity} />
+						</div>
+					</MuiThemeProvider>
 				</ConnectedRouter>
 			</Provider>
 		);
