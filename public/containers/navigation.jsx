@@ -14,6 +14,9 @@ import HomeIcon from 'material-ui-icons/Home';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { toggleDrawer } from '../actions/navigation.js';
+import { fetchEntities } from '../actions/entities.js';
+import Avatar from 'material-ui/Avatar';
+import { push } from 'react-router-redux';
 
 const drawerWidth = 240;
 const styles = theme => ({
@@ -96,10 +99,20 @@ const styles = theme => ({
 	listItemText: {
 		color: theme.palette.common.darkWhite
 	},
+	listItemIconShift: {
+		marginLeft: 55,
+		color: theme.palette.common.darkWhite
+	},
 	listItemIcon: {
 		color: theme.palette.common.darkWhite
+	},
+	pageTitle: {
+		marginLeft: 100
+	},
+	avatar: {
+		width: 30,
+		height: 30
 	}
-
 });
 class Navigation extends Component {
 	render() {
@@ -114,8 +127,8 @@ class Navigation extends Component {
 								onClick={this.props.drawerOpen}>
 								<MenuIcon />
 							</IconButton>
-							<Typography type="title" color="inherit" className={classes.flex}>
-								Home
+							<Typography type="title" color="inherit" className={classNames(classes.flex, classes.pageTitle)}>
+								{this.props.title}
 							</Typography>
 						</Toolbar>
 					</AppBar>
@@ -128,14 +141,14 @@ class Navigation extends Component {
 						<div className={classes.drawerInner}>
 							<div className={classes.drawerHeader}>
 								<IconButton onClick={this.props.drawerClose}>
-									<ChevronLeftIcon className={classes.listItemIcon}/>
+									<ChevronLeftIcon className={classes.listItemIcon} />
 								</IconButton>
 							</div>
 							<Divider />
 							<List>
-								<ListItem button>
+								<ListItem button onClick={()=>this.props.navigateTo('/')}>
 									<ListItemIcon>
-										<HomeIcon className={classes.listItemIcon}/>
+										<HomeIcon className={classes.listItemIcon} />
 									</ListItemIcon>
 									<ListItemText classes={{
 										text: classes.listItemText
@@ -143,9 +156,24 @@ class Navigation extends Component {
 								</ListItem>
 							</List>
 							<Divider />
+							<List>{
+								this.props.entities.map(entity => {
+									return <ListItem button key={entity.ID}>
+										{!this.props.open && <ListItemIcon>
+											<Avatar aria-label={entity.name} className={classes.avatar}>
+												{entity.name.charAt(0).toUpperCase()}
+											</Avatar>
+										</ListItemIcon>}
+										{this.props.open && <ListItemText
+											classes={{text: classNames(classes.listitemText, classes.listItemIconShift)}}
+											primary={entity.name} 
+										/>}
+									</ListItem>;
+								})}
+							</List>
 						</div>
 					</Drawer>
-					
+
 					<main className={classes.content}>
 						{this.props.children}
 					</main>
@@ -153,18 +181,26 @@ class Navigation extends Component {
 			</div>
 		);
 	}
+	componentDidMount() {
+		this.props.fetchEntities();
+	}
 }
 Navigation.propTypes = {
 	classes: PropTypes.object.isRequired,
 	children: PropTypes.node.isRequired,
 	open: PropTypes.bool.isRequired,
 	drawerOpen: PropTypes.func.isRequired,
-	drawerClose: PropTypes.func.isRequired
+	drawerClose: PropTypes.func.isRequired,
+	fetchEntities: PropTypes.func.isRequired,
+	title: PropTypes.string,
+	entities: PropTypes.array.isRequired,
+	navigateTo: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => {
 	return {
-		open: state.navigation.drawer.open
+		open: state.navigation.drawer.open,
+		entities: state.entities.all
 	};
 };
 
@@ -175,6 +211,12 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		drawerClose: () => {
 			dispatch(toggleDrawer(false));
+		},
+		fetchEntities: () => {
+			dispatch(fetchEntities());
+		},
+		navigateTo: (route) => {
+			dispatch(push(route));
 		}
 	};
 };

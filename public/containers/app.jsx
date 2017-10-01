@@ -6,11 +6,11 @@ import * as reducers from '../reducers';
 import createHistory from 'history/createBrowserHistory';
 import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
-import Home from '../components/home.jsx';
-import Entity from '../components/entity.jsx';
+import Home from './home.jsx';
+import Entity from './entity.jsx';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import primary from 'material-ui/colors/blueGrey';
-import cyan from 'material-ui/colors/cyan';
+import secondary from 'material-ui/colors/blue';
 const history = createHistory();
 const middleware = routerMiddleware(history);
 const store = createStore(
@@ -24,7 +24,7 @@ const store = createStore(
 const theme = createMuiTheme({
 	palette: {
 		primary: primary,
-		secondary: cyan
+		secondary: secondary
 	},
 });
 export default class App extends Component {
