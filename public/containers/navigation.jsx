@@ -1,22 +1,22 @@
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Divider from 'material-ui/Divider';
-import MenuIcon from 'material-ui-icons/Menu';
 import { withStyles } from 'material-ui/styles';
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
-import PropTypes from 'prop-types';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import MenuIcon from 'material-ui-icons/Menu';
+import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import HomeIcon from 'material-ui-icons/Home';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
 import { toggleDrawer } from '../actions/navigation.js';
 import { fetchEntities } from '../actions/entities.js';
-import Avatar from 'material-ui/Avatar';
-import { push } from 'react-router-redux';
 
 const drawerWidth = 240;
 const styles = theme => ({

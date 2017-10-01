@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import * as reducers from '../reducers';
-import createHistory from 'history/createBrowserHistory';
 import { Route } from 'react-router';
 import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-redux';
-import Home from './home.jsx';
-import Entity from './entity.jsx';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import thunk from 'redux-thunk';
 import primary from 'material-ui/colors/blueGrey';
 import secondary from 'material-ui/colors/blue';
+import createHistory from 'history/createBrowserHistory';
+import * as reducers from '../reducers';
+import Home from './home.jsx';
+import Entity from './entity.jsx';
+
 const history = createHistory();
 const middleware = routerMiddleware(history);
 const store = createStore(

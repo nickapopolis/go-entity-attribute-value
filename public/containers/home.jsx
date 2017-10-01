@@ -1,17 +1,18 @@
 import _ from 'lodash';
-import React, { Component } from 'react';
-import Navigation from './navigation.jsx';
-import Typography from 'material-ui/Typography';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import Typography from 'material-ui/Typography';
+import Avatar from 'material-ui/Avatar';
+import Card, { CardActions, CardHeader } from 'material-ui/Card';
+import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DescriptionIcon from 'material-ui-icons/Description';
-import { push } from 'react-router-redux';
-import Card, { CardActions, CardHeader } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+import Navigation from './navigation.jsx';
+
 const styles = theme => ({
 	card: {
 		minWidth: 150,

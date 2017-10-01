@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import Navigation from './navigation.jsx';
+import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import SaveIcon from 'material-ui-icons/Save';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { connect } from 'react-redux';
-import { fieldChanged, save} from '../actions/entities.js';
 import Typography from 'material-ui/Typography';
+import { withStyles } from 'material-ui/styles';
+import PropTypes from 'prop-types';
+import Navigation from './navigation.jsx';
+import { fieldChanged, save} from '../actions/entities.js';
+
 const styles = theme => ({
 	button: {
 		margin: theme.spacing.unit,
