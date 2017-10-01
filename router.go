@@ -12,7 +12,6 @@ import (
 /*Router something */
 func Router(db *gorm.DB) {
 	router := mux.NewRouter()
-	router.HandleFunc("/", rootHandle)
 
 	//static files (until nginx)
 	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/dist", http.FileServer(http.Dir("./public/dist"))))
@@ -20,6 +19,9 @@ func Router(db *gorm.DB) {
 	//api
 	apiRouter := router.PathPrefix("/api/1.0").Subrouter()
 	entity.Controller(apiRouter, db)
+
+	//default handle single page app
+	router.PathPrefix("/").HandlerFunc(rootHandle)
 
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
