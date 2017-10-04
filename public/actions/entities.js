@@ -54,3 +54,24 @@ export function save(entity) {
 		});
 	};
 }
+export const EDIT_ENTITY_ID = 'EDIT_ENTITY_ID';
+export function editEntityID(id) {
+	var url = '/api/1.0/entity/' + id;
+	return function(dispatch){
+		fetch(url, {
+			method: 'GET',
+			type: 'application/json'
+		}).then(function(res){
+			return res.json();
+		}).then(function(res){
+			dispatch(editEntity(res));
+		});
+	};
+}
+export const EDIT_ENTITY = 'EDIT_ENTITY';
+export function editEntity(entity) {
+	return {
+		type: EDIT_ENTITY,
+		entity: entity
+	};
+}

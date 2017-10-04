@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
@@ -9,7 +10,7 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Navigation from './navigation.jsx';
-import { fieldChanged, save} from '../actions/entities.js';
+import { fieldChanged, save, editEntityID} from '../actions/entities.js';
 
 const styles = theme => ({
 	button: {
@@ -27,6 +28,12 @@ const styles = theme => ({
 class Entity extends Component {
 	handleChange(event){
 		this.props.fieldChanged(event.target.id, event.target.value);
+	}
+	componentDidMount() {
+		var entityId = _.get(this, 'props.match.params.id');
+		if(entityId){
+			this.props.editEntityID(entityId);
+		}
 	}
 	render() {
 		const classes = this.props.classes;
@@ -65,7 +72,9 @@ Entity.propTypes = {
 	save: PropTypes.func.isRequired,
 	name: PropTypes.string,
 	fieldChanged: PropTypes.func.isRequired,
-	edit: PropTypes.object.isRequired
+	edit: PropTypes.object.isRequired,
+	match: PropTypes.object.isRequired,
+	editEntityID: PropTypes.func.isRequired
 };
 const mapStateToProps = (state) => {
 	return {
@@ -81,6 +90,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		save: (entity)=>{
 			dispatch(save(entity));
+		},
+		editEntityID: (id) =>{
+			dispatch(editEntityID(id));
 		}
 	};
 };
