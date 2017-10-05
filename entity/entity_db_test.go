@@ -51,8 +51,8 @@ func TestDBActions(t *testing.T) {
 	entity.Migrator(db)
 
 	t.Run("EntityDBCreate", testDbCreate(db))
-
 	t.Run("EntityDBList", testDbList(db))
+	t.Run("EntityDBLoad", testDbLoad(db))
 
 	entity.Teardown(db)
 	db.Close()
@@ -87,4 +87,26 @@ func testDbList(db *gorm.DB) func(t *testing.T) {
 		db.Find(&entities)
 		assert.Equal(t, 1, len(entities))
 	}
+}
+func testDbLoad(db *gorm.DB) func(t *testing.T) {
+	return func(t *testing.T) {
+		createEntity := &entity.Entity{
+			Name: "Person",
+			Fields: []entity.Field{
+				{Name: "First"},
+				{Name: "Last"},
+				{Name: "Email"},
+			},
+		}
+		createEntityViaDb(db, createEntity)
+		assert.NotNil(t, createEntity.ID)
+		loadEntity := entity.Entity{}
+		db.Preload("Fields").First(&loadEntity, createEntity.ID)
+		assert.NotNil(t, createEntity.ID)
+	}
+}
+
+func createEntityViaDb(db *gorm.DB, newEntity *entity.Entity){
+	db.NewRecord(newEntity)
+	db.Create(&newEntity)
 }

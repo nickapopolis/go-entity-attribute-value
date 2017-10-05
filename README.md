@@ -23,3 +23,4 @@ Endpoint | Action | Description
 --- | --- | ---
 /entity | POST | Create a new Entity
 /entity | GET | List all Entities
+/entity/{id} | GET | Load Entity with id

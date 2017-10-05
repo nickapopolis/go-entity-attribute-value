@@ -37,6 +37,7 @@ export default class App extends Component {
 						<div>
 							<Route exact path="/" component={Home} />
 							<Route path="/entity/new" component={Entity} />
+							<Route path="/entity/:id" component={Entity} />
 						</div>
 					</MuiThemeProvider>
 				</ConnectedRouter>

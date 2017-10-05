@@ -1,11 +1,14 @@
 import {
 	ADD_ENTITY,
 	SET_ENTITIES,
-	SET_ENTITY_FIELD_VALUE
+	SET_ENTITY_FIELD_VALUE,
+	EDIT_ENTITY
 } from '../actions/entities.js';
 const initialState = {
 	all: [],
-	edit: {}
+	edit: {
+		name: ''
+	}
 };
 export default function reducer(state = initialState, action = {}) {
 	switch (action.type) {
@@ -30,6 +33,11 @@ export default function reducer(state = initialState, action = {}) {
 				...state.all,
 				action.entity
 			]
+		};
+	case EDIT_ENTITY:
+		return {
+			...state,
+			edit: action.entity
 		};
 	default:
 		return state;

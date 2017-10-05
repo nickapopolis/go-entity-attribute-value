@@ -75,7 +75,9 @@ class Home extends Component {
 									<Button dense color="primary">
 										View records
 									</Button>
-									<Button><EditIcon/></Button>
+									<Button
+										onClick={() => this.props.navigateTo('/entity/' + entity.ID)}
+									><EditIcon/></Button>
 								</CardActions>
 							</Card>;
 						})
