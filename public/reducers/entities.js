@@ -6,6 +6,10 @@ import {
 } from '../actions/entities.js';
 const initialState = {
 	all: [],
+	table: {
+		rows: [],
+		entity: null
+	},
 	edit: {
 		name: ''
 	}

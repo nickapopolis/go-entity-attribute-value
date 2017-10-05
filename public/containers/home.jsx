@@ -72,7 +72,8 @@ class Home extends Component {
 									subheader={(_.get(entity, 'fields.length') || 0) + ' Fields'}
 								/>
 								<CardActions>
-									<Button dense color="primary">
+									<Button dense color="primary"
+										onClick={() => this.props.navigateTo('/eav/' + entity.ID)}>
 										View records
 									</Button>
 									<Button
