@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"fmt"
 	"encoding/json"
 	"net/http"
 
