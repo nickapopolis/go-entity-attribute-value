@@ -39,7 +39,7 @@ class EAV extends Component {
 		return (
 			<Navigation>
 				<Button fab color="accent" aria-label="add" className={classes.button}
-					onClick={() => this.props.navigateTo('/eav/' + _.get(this, 'props.entity.ID') + '/new' )}>
+					onClick={() => this.props.navigateTo('/eav/' + _.get(this, 'props.entity.id') + '/new' )}>
 					<AddIcon />
 				</Button>
 				<Paper className={classes.paper}>
@@ -55,8 +55,8 @@ class EAV extends Component {
 						<TableBody>
 							{this.props.rows.map(row => {
 								return (
-									<TableRow key={row.ID}>
-										<TableCell>{row.ID}</TableCell>
+									<TableRow key={row.id}>
+										<TableCell>{row.id}</TableCell>
 									</TableRow>
 								);
 							})}

@@ -9,8 +9,8 @@ export function loadEntityData(entityId) {
 		let entityJSON = await entityRes.json();
 		dispatch(setEntityDataType(entityJSON));
 		var entityDataJSON = [
-			{ID: '1'},
-			{ID: '2'}
+			{id: '1', field: 'field1'},
+			{id: '2', field: 'field2'}
 		];
 		dispatch(setEntityData(entityDataJSON));
 	};

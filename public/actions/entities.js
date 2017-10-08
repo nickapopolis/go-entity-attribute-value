@@ -1,4 +1,6 @@
 import { push } from 'react-router-redux';
+import uuid from 'uuid';
+import _ from 'lodash';
 
 export const FETCH_ENTITIES = 'FETCH_ENTITIES';
 export function fetchEntities(open) {
@@ -20,6 +22,17 @@ export function setEntities(entities) {
 		entities: entities
 	};
 }
+export const CREATE_ENTITY = 'CREATE_ENTITY';
+export function createEntity() {
+	return {
+		type: CREATE_ENTITY,
+		entity: {
+			id: uuid.v4(),
+			fields: [],
+			name: ''
+		}
+	};
+}
 export const ADD_ENTITY = 'ADD_ENTITY';
 export function addEntity(entity) {
 	return {
@@ -27,25 +40,22 @@ export function addEntity(entity) {
 		entity: entity
 	};
 }
-export const SET_ENTITY_FIELD_VALUE = 'SET_ENTITY_FIELD_VALUE';
-export function fieldChanged(field, value) {
-	return {
-		type: SET_ENTITY_FIELD_VALUE,
-		field: field,
-		value: value
-	};
-}
 export const SAVE_ENTITY = 'SAVE_ENTITY';
 export function save(entity) {
 	var url = '/api/1.0/entity';
-	if(entity.id){
+	if(entity.createdAt){
 		url = url + '/' + entity.id;
 	}
-	return function(dispatch){
+	return function(dispatch, getState){
+		var {fields} = getState();
+		const body = {
+			...entity,
+			fields: _.values(fields.edit)
+		};
 		fetch(url, {
 			method: 'POST',
 			type: 'application/json',
-			body: JSON.stringify(entity)
+			body: JSON.stringify(body)
 		}).then(function(res){
 			return res.json();
 		}).then(function(res){

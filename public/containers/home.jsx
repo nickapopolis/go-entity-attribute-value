@@ -61,7 +61,7 @@ class Home extends Component {
 				<div className={classes.entityCards}>
 					{
 						this.props.entities.map((entity) => {
-							return <Card className={classes.card} key={entity.ID}>
+							return <Card className={classes.card} key={entity.id}>
 								<CardHeader
 									avatar={
 										<Avatar aria-label={entity.name} className={classes.avatar}>
@@ -73,11 +73,11 @@ class Home extends Component {
 								/>
 								<CardActions>
 									<Button dense color="primary"
-										onClick={() => this.props.navigateTo('/eav/' + entity.ID)}>
+										onClick={() => this.props.navigateTo('/eav/' + entity.id)}>
 										View records
 									</Button>
 									<Button
-										onClick={() => this.props.navigateTo('/entity/' + entity.ID)}
+										onClick={() => this.props.navigateTo('/entity/' + entity.id)}
 									><EditIcon/></Button>
 								</CardActions>
 							</Card>;

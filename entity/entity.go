@@ -2,27 +2,53 @@ package entity
 
 import (
 	"github.com/jinzhu/gorm"
+	"time"
+    "github.com/satori/go.uuid"
 )
 
 //Entity is a struct for managing dynamic tables
 type Entity struct {
-	gorm.Model
+	ID        uuid.UUID  `json:"id" gorm:"type:uuid;primary_key;"`
+	CreatedAt time.Time	`json:"createdAt"`
+	UpdatedAt time.Time	`json:"updatedAt"`
+	DeletedAt *time.Time	`sql:"index" json:"deletedAt"`
 	Name   string  `json:"name"`
 	Fields []Field `json:"fields" gorm:"ForeignKey:EntityID"`
 }
-
+func (entity *Entity) BeforeCreate(scope *gorm.Scope) error {
+	if(isNilUUID(entity.ID)){
+		scope.SetColumn("ID", uuid.NewV4())
+	}
+    return nil
+}
 //Field is a struct for managing field metadata on dynamic tables
 type Field struct {
-	gorm.Model
+	ID        uuid.UUID  `json:"id" gorm:"type:uuid;primary_key;"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
 	Name     string `json:"name"`
-	EntityID uint
+	EntityID uuid.UUID `gorm:"type:uuid"`
+}
+func (field *Field) BeforeCreate(scope *gorm.Scope) error {
+	if(isNilUUID(field.ID)){
+		scope.SetColumn("ID", uuid.NewV4())
+	}
+    return nil
 }
 
 // EAV is a struct for managing field values of dynamic tables
 type EAV struct {
-	gorm.Model
+	ID        uuid.UUID  `json:"id" gorm:"type:uuid;primary_key;"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
 	Entity      Entity
 	Field       Field
 	ValueString string
 	ValueInt    int
+}
+func isNilUUID(input uuid.UUID) bool{
+	nilUuid := uuid.UUID{};
+	return input == nilUuid;
 }

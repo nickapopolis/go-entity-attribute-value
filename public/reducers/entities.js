@@ -1,9 +1,11 @@
 import {
 	ADD_ENTITY,
 	SET_ENTITIES,
-	SET_ENTITY_FIELD_VALUE,
-	EDIT_ENTITY
+	EDIT_ENTITY,
+	CREATE_ENTITY
 } from '../actions/entities.js';
+import {SET_FIELD_VALUE} from '../actions/forms.js';
+import _ from 'lodash';
 const initialState = {
 	all: [],
 	table: {
@@ -11,7 +13,8 @@ const initialState = {
 		entity: null
 	},
 	edit: {
-		name: ''
+		name: '',
+		fields: []
 	}
 };
 export default function reducer(state = initialState, action = {}) {
@@ -20,9 +23,15 @@ export default function reducer(state = initialState, action = {}) {
 	case SET_ENTITIES:
 		return {
 			...state,
-			all: action.entities || []
+			all: _.map(action.entities, (entity)=>{
+				return {
+					...entity,
+					fields: _.map(entity.fields, 'id')
+				};
+			})
 		};
-	case SET_ENTITY_FIELD_VALUE:
+	case SET_FIELD_VALUE:
+		if(action.id !== state.edit.id) return state;
 		return {
 			...state,
 			edit: {
@@ -39,6 +48,14 @@ export default function reducer(state = initialState, action = {}) {
 			]
 		};
 	case EDIT_ENTITY:
+		return {
+			...state,
+			edit: {
+				...action.entity,
+				fields: _.map(action.entity.fields, 'id')
+			}
+		};
+	case CREATE_ENTITY:
 		return {
 			...state,
 			edit: action.entity

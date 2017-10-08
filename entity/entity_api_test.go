@@ -1,7 +1,6 @@
 package entity_test
 
 import (
-    "strconv"
 	"eav-app/entity"
 	"net/http"
 	"net/http/httptest"
@@ -52,7 +51,7 @@ func testApiLoad(router *mux.Router, db *gorm.DB) func(*testing.T) {
 	return func(t *testing.T) {
 		newEntity := createEntity(router)
 		assert.NotNil(t, newEntity.ID)
-		id := strconv.FormatUint(uint64(newEntity.ID), 10)
+		id := newEntity.ID.String()
 		url := "http://localhost:3000/entity/" + id
 		r, _ := http.NewRequest("GET", url, nil)
 		w := httptest.NewRecorder()

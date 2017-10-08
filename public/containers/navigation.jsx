@@ -158,8 +158,8 @@ class Navigation extends Component {
 							<Divider />
 							<List>{
 								this.props.entities.map(entity => {
-									return <ListItem button key={entity.ID}
-										onClick={()=>this.props.navigateTo('/eav/' + entity.ID)}>
+									return <ListItem button key={entity.id}
+										onClick={()=>this.props.navigateTo('/eav/' + entity.id)}>
 										{!this.props.open && <ListItemIcon>
 											<Avatar aria-label={entity.name} className={classes.avatar}>
 												{entity.name.charAt(0).toUpperCase()}
