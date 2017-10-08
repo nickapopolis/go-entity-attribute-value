@@ -11,6 +11,7 @@ import createHistory from 'history/createBrowserHistory';
 import * as reducers from '../reducers';
 import Home from './home.jsx';
 import Entity from './entity.jsx';
+import EAV from './eav.jsx';
 
 const history = createHistory();
 const middleware = routerMiddleware(history);
@@ -36,8 +37,8 @@ export default class App extends Component {
 					<MuiThemeProvider theme={theme}>
 						<div>
 							<Route exact path="/" component={Home} />
-							<Route path="/entity/new" component={Entity} />
 							<Route path="/entity/:id" component={Entity} />
+							<Route path="/eav/:entityId" component={EAV} />
 						</div>
 					</MuiThemeProvider>
 				</ConnectedRouter>

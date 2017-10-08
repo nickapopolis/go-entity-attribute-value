@@ -1,6 +1,7 @@
 package entity_test
 
 import (
+	"github.com/satori/go.uuid"
 	"eav-app/entity"
 	"encoding/json"
 	"os"
@@ -20,17 +21,26 @@ func TestFieldJsonSerialization(t *testing.T) {
 	assert.Equal(t, newField.Name, "First")
 }
 func TestEntityJsonSerialization(t *testing.T) {
-	entityJSON := []byte(`{"name": "Person", "fields": [
-		{"name": "First"},
-		{"name": "Last"},
-		{"name": "Email"}
-	]}`)
+	entityJSON := []byte(`{
+		"name": "Person",
+		"id": "64d67005-36e3-49ec-b97c-99c5ccd651f8",
+		"fields": [
+			{
+				"name": "First",
+				"id": "64d67005-36e3-49ec-b97c-99c5ccd651f8"
+			},
+			{"name": "Last"},
+			{"name": "Email"}
+		]
+	}`)
 	newEntity := entity.Entity{}
 	err := json.Unmarshal(entityJSON, &newEntity)
 
 	assert.Nil(t, err)
+	assert.Equal(t, newEntity.ID.String(), "64d67005-36e3-49ec-b97c-99c5ccd651f8")
 	assert.Equal(t, newEntity.Name, "Person")
 	assert.Equal(t, newEntity.Fields[0].Name, "First")
+	assert.Equal(t, newEntity.Fields[0].ID.String(), "64d67005-36e3-49ec-b97c-99c5ccd651f8")
 	assert.Equal(t, newEntity.Fields[1].Name, "Last")
 	assert.Equal(t, newEntity.Fields[2].Name, "Email")
 }
@@ -51,6 +61,7 @@ func TestDBActions(t *testing.T) {
 	entity.Migrator(db)
 
 	t.Run("EntityDBCreate", testDbCreate(db))
+	t.Run("EntityDBCreateWithId", testDbCreateWithId(db))
 	t.Run("EntityDBList", testDbList(db))
 	t.Run("EntityDBLoad", testDbLoad(db))
 
@@ -81,11 +92,38 @@ func testDbCreate(db *gorm.DB) func(t *testing.T) {
 		assert.Equal(t, 3, len(createdFields))
 	}
 }
+
+func testDbCreateWithId(db *gorm.DB) func(t *testing.T) {
+	return func(t *testing.T) {
+		customUuid := uuid.NewV4()
+		newEntity := &entity.Entity{
+			ID: customUuid,
+			Name: "Person2",
+			Fields: []entity.Field{
+				{Name: "First"},
+				{Name: "Last"},
+				{Name: "Email"},
+			},
+		}
+		db.NewRecord(newEntity)
+		db.Create(&newEntity)
+
+		createdEntity := entity.Entity{}
+		db.Where("name = ?", "Person2").First(&createdEntity)
+		assert.Equal(t, "Person2", createdEntity.Name)
+		assert.NotNil(t, createdEntity.ID)
+		assert.Equal(t, customUuid, createdEntity.ID)
+
+		createdFields := []entity.Field{}
+		db.Where("entity_id = ?", createdEntity.ID).Find(&createdFields)
+		assert.Equal(t, 3, len(createdFields))
+	}
+}
 func testDbList(db *gorm.DB) func(t *testing.T) {
 	return func(t *testing.T) {
 		entities := []entity.Entity{}
 		db.Find(&entities)
-		assert.Equal(t, 1, len(entities))
+		assert.Equal(t, 2, len(entities))
 	}
 }
 func testDbLoad(db *gorm.DB) func(t *testing.T) {

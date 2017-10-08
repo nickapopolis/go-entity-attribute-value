@@ -10,7 +10,15 @@ import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Navigation from './navigation.jsx';
-import { fieldChanged, save, editEntityID} from '../actions/entities.js';
+import {
+	save,
+	editEntityID,
+	createEntity
+} from '../actions/entities.js';
+import {
+	fieldChanged
+} from '../actions/forms.js';
+import FieldList from './field-list.jsx';
 
 const styles = theme => ({
 	button: {
@@ -26,13 +34,19 @@ const styles = theme => ({
 	}
 });
 class Entity extends Component {
-	handleChange(event){
-		this.props.fieldChanged(event.target.id, event.target.value);
+	fieldChanged(event){
+		this.props.fieldChanged(
+			this.props.edit.id,
+			event.target.id,
+			event.target.value
+		);
 	}
 	componentDidMount() {
 		var entityId = _.get(this, 'props.match.params.id');
-		if(entityId){
+		if(entityId !== 'new'){
 			this.props.editEntityID(entityId);
+		}else {
+			this.props.createEntity();
 		}
 	}
 	render() {
@@ -56,11 +70,17 @@ class Entity extends Component {
 							label="Entity Name"
 							margin="normal"
 							value={this.props.name}
-							onChange={this.handleChange.bind(this)}
+							onChange={this.fieldChanged.bind(this)}
 							required={true}>
 						</TextField>
 					</div>
-					
+					<Divider/>
+					<div className={classes.paperHeader}>
+						<Typography type="title" color="inherit">
+							Fields
+						</Typography>
+					</div>
+					<FieldList/>
 				</Paper>
 			</Navigation>
 		);
@@ -74,7 +94,8 @@ Entity.propTypes = {
 	fieldChanged: PropTypes.func.isRequired,
 	edit: PropTypes.object.isRequired,
 	match: PropTypes.object.isRequired,
-	editEntityID: PropTypes.func.isRequired
+	editEntityID: PropTypes.func.isRequired,
+	createEntity: PropTypes.func.isRequired
 };
 const mapStateToProps = (state) => {
 	return {
@@ -85,14 +106,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		fieldChanged: (field, value)=>{
-			dispatch(fieldChanged(field, value));
+		fieldChanged: (id, field, value)=>{
+			dispatch(fieldChanged(id, field, value));
 		},
 		save: (entity)=>{
 			dispatch(save(entity));
 		},
 		editEntityID: (id) =>{
 			dispatch(editEntityID(id));
+		},
+		createEntity: ()=>{
+			dispatch(createEntity());
 		}
 	};
 };

@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"fmt"
+	"github.com/satori/go.uuid"
 	"encoding/json"
 	"net/http"
 
@@ -12,7 +12,7 @@ import (
 // Controller API route mux for Entity
 func Controller(router *mux.Router, db *gorm.DB) {
 	router.HandleFunc("/entity", indexHandler(db)).Methods("POST", "GET")
-	router.HandleFunc("/entity/{id:[0-9]+}", loadUpdateHandler(db)).Methods("GET")
+	router.HandleFunc("/entity/{id}", loadUpdateHandler(db)).Methods("GET")
 }
 func indexHandler(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -56,9 +56,9 @@ func listHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 }
 func loadHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
-	loadEntity := Entity{}
-	db.Preload("Fields").First(&loadEntity, id)
+	id, _ := uuid.FromString(vars["id"])
+	loadEntity := Entity{ID: id}
+	db.Preload("Fields").First(&loadEntity)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(loadEntity)
 }
