@@ -1,6 +1,7 @@
 package entity_test
 
 import (
+	"bytes"
 	"eav-app/entity"
 	"net/http"
 	"net/http/httptest"
@@ -25,6 +26,7 @@ func TestApi(t *testing.T) {
 	t.Run("EntityCreate", testApiCreate(router, db))
 	t.Run("EntityList", testApiList(router, db))
 	t.Run("EntityLoad", testApiLoad(router, db))
+	t.Run("EntityUpdate", testApiUpdate(router, db))
 
 	entity.Teardown(db)
 	db.Close()
@@ -54,6 +56,21 @@ func testApiLoad(router *mux.Router, db *gorm.DB) func(*testing.T) {
 		id := newEntity.ID.String()
 		url := "http://localhost:3000/entity/" + id
 		r, _ := http.NewRequest("GET", url, nil)
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, r)
+		assert.Equal(t, 200, w.Code)
+		assert.NotNil(t, w.Body)
+	}
+}
+func testApiUpdate(router *mux.Router, db *gorm.DB) func(*testing.T) {
+	return func(t *testing.T) {
+		newEntity := createEntity(router)
+		assert.NotNil(t, newEntity.ID)
+		newEntity.Name = "UpdatedName"
+		id := newEntity.ID.String()
+		url := "http://localhost:3000/entity/" + id
+		responseBytes, _ := json.Marshal(&newEntity)
+		r, _ := http.NewRequest("POST", url, bytes.NewBuffer(responseBytes))
 		w := httptest.NewRecorder()
 		router.ServeHTTP(w, r)
 		assert.Equal(t, 200, w.Code)

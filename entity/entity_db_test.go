@@ -61,9 +61,11 @@ func TestDBActions(t *testing.T) {
 	entity.Migrator(db)
 
 	t.Run("EntityDBCreate", testDbCreate(db))
-	t.Run("EntityDBCreateWithId", testDbCreateWithId(db))
 	t.Run("EntityDBList", testDbList(db))
 	t.Run("EntityDBLoad", testDbLoad(db))
+	t.Run("EntityDBCreateWithId", testDbCreateWithId(db))
+	t.Run("EntityDBUpdate", testDbUpdate(db))
+	
 
 	entity.Teardown(db)
 	db.Close()
@@ -123,7 +125,7 @@ func testDbList(db *gorm.DB) func(t *testing.T) {
 	return func(t *testing.T) {
 		entities := []entity.Entity{}
 		db.Find(&entities)
-		assert.Equal(t, 2, len(entities))
+		assert.Equal(t, 1, len(entities))
 	}
 }
 func testDbLoad(db *gorm.DB) func(t *testing.T) {
@@ -143,7 +145,24 @@ func testDbLoad(db *gorm.DB) func(t *testing.T) {
 		assert.NotNil(t, createEntity.ID)
 	}
 }
-
+func testDbUpdate(db *gorm.DB) func(t *testing.T) {
+	return func(t *testing.T) {
+		createEntity := &entity.Entity{
+			Name: "Person3",
+			Fields: []entity.Field{
+				{Name: "First"},
+				{Name: "Last"},
+				{Name: "Email"},
+			},
+		}
+		createEntityViaDb(db, createEntity)
+		assert.NotNil(t, createEntity.ID)
+		createEntity.Name = "Person4"
+		db.Model(&createEntity).Update(&createEntity)
+		assert.Equal(t, createEntity.Name, "Person4")
+		assert.NotNil(t, createEntity.ID)
+	}
+}
 func createEntityViaDb(db *gorm.DB, newEntity *entity.Entity){
 	db.NewRecord(newEntity)
 	db.Create(&newEntity)
