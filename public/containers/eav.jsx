@@ -49,14 +49,21 @@ class EAV extends Component {
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell>ID</TableCell>
+								{_.map(this.props.fields, (field)=>{
+									console.log(
+										this.props.fields
+									)
+									return <TableCell>{field.name}</TableCell>;
+								})}
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{this.props.rows.map(row => {
 								return (
 									<TableRow key={row.id}>
-										<TableCell>{row.id}</TableCell>
+										{_.map(_.get(this.props.fields), (field)=>{
+											return <TableCell>{row[field.name]}</TableCell>;
+										})}
 									</TableRow>
 								);
 							})}
@@ -72,13 +79,24 @@ EAV.propTypes = {
 	classes: PropTypes.object.isRequired,
 	rows: PropTypes.array.isRequired,
 	entity: PropTypes.object,
+	fields: PropTypes.array,
 	loadEntityData: PropTypes.func.isRequired,
 	navigateTo: PropTypes.func.isRequired
 };
 const mapStateToProps = (state) => {
+	let entity = _.find(state.entities.all, {
+		id: state.eav.entity
+	}) || {};
+	console.log(state.fields)
+	let fields = _.isEmpty(entity.fields)
+		? []
+		: _.map(entity.fields, (field)=>{
+			return state.fields.all[field];
+		});
 	return {
 		rows: state.eav.rows,
-		entity: _.get(state, 'eav.entity')
+		entity,
+		fields
 	};
 };
 

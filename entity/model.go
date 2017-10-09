@@ -37,17 +37,6 @@ func (field *Field) BeforeCreate(scope *gorm.Scope) error {
     return nil
 }
 
-// EAV is a struct for managing field values of dynamic tables
-type EAV struct {
-	ID        uuid.UUID  `json:"id" gorm:"type:uuid;primary_key;"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time `sql:"index"`
-	Entity      Entity
-	Field       Field
-	ValueString string
-	ValueInt    int
-}
 func isNilUUID(input uuid.UUID) bool{
 	nilUuid := uuid.UUID{};
 	return input == nilUuid;

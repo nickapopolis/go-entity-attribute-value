@@ -2,6 +2,7 @@ package main
 
 import (
 	"eav-app/entity"
+	"eav-app/eav"
 	"log"
 	"net/http"
 
@@ -19,6 +20,7 @@ func Router(db *gorm.DB) {
 	//api
 	apiRouter := router.PathPrefix("/api/1.0").Subrouter()
 	entity.Controller(apiRouter, db)
+	eav.Controller(apiRouter, db)
 
 	//default handle single page app
 	router.PathPrefix("/").HandlerFunc(rootHandle)

@@ -8,12 +8,10 @@ import (
 func Migrator(db *gorm.DB) {
 	db.AutoMigrate(&Field{})
 	db.AutoMigrate(&Entity{})
-	db.AutoMigrate(&EAV{})
 }
 
 /*Teardown remove entity, field and EAV table from the db*/
 func Teardown(db *gorm.DB) {
 	db.DropTable(&Field{})
 	db.DropTable(&Entity{})
-	db.DropTable(&EAV{})
 }
