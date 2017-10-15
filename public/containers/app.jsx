@@ -11,6 +11,7 @@ import createHistory from 'history/createBrowserHistory';
 import * as reducers from '../reducers';
 import Home from './home.jsx';
 import Entity from './entity.jsx';
+import EAVList from './eav-list.jsx';
 import EAV from './eav.jsx';
 
 const history = createHistory();
@@ -38,7 +39,8 @@ export default class App extends Component {
 						<div>
 							<Route exact path="/" component={Home} />
 							<Route path="/entity/:id" component={Entity} />
-							<Route path="/eav/:entityId" component={EAV} />
+							<Route exact path="/eav/:entityId" component={EAVList} />
+							<Route exact path="/eav/:entityId/:id" component={EAV} />
 						</div>
 					</MuiThemeProvider>
 				</ConnectedRouter>
