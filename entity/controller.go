@@ -52,7 +52,7 @@ func createHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 }
 func listHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	entities := []Entity{}
-	db.Find(&entities)
+	db.Preload("Fields").Find(&entities)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(entities)
 }
