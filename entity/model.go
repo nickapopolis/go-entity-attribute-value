@@ -28,7 +28,7 @@ type Field struct {
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`
 	Name     string `json:"name"`
-	EntityID uuid.UUID `gorm:"type:uuid"`
+	EntityID uuid.UUID `json:"entityId" gorm:"type:uuid"`
 }
 func (field *Field) BeforeCreate(scope *gorm.Scope) error {
 	if(isNilUUID(field.ID)){
