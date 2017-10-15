@@ -4,7 +4,11 @@ import {
 	EDIT_ENTITY,
 	CREATE_ENTITY
 } from '../actions/entities.js';
-import {SET_FIELD_VALUE} from '../actions/forms.js';
+import {
+	SET_ENTITY_DATA_TYPE
+} from '../actions/eav.js';
+
+import { SET_FIELD_VALUE } from '../actions/forms.js';
 import _ from 'lodash';
 const initialState = {
 	all: [],
@@ -23,7 +27,7 @@ export default function reducer(state = initialState, action = {}) {
 	case SET_ENTITIES:
 		return {
 			...state,
-			all: _.map(action.entities, (entity)=>{
+			all: _.map(action.entities, (entity) => {
 				return {
 					...entity,
 					fields: _.map(entity.fields, 'id')
@@ -31,7 +35,7 @@ export default function reducer(state = initialState, action = {}) {
 			})
 		};
 	case SET_FIELD_VALUE:
-		if(action.id !== state.edit.id) return state;
+		if (action.id !== state.edit.id) return state;
 		return {
 			...state,
 			edit: {
@@ -59,6 +63,14 @@ export default function reducer(state = initialState, action = {}) {
 		return {
 			...state,
 			edit: action.entity
+		};
+	case SET_ENTITY_DATA_TYPE:
+		return {
+			...state,
+			all: _.unionBy([{
+				...action.entity,
+				fields: _.map(action.entity.fields, 'id')
+			}], state.all, 'id')
 		};
 	default:
 		return state;

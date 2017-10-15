@@ -1,96 +1,72 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Paper from 'material-ui/Paper';
-import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Navigation from './navigation.jsx';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import {loadEntityData} from '../actions/eav';
-import Button from 'material-ui/Button';
-import AddIcon from 'material-ui-icons/Add';
-import { push } from 'react-router-redux';
+import {
+	save,
+	editID,
+	create,
+	setEntityDataTypeID
+} from '../actions/eav.js';
+import EAVForm from './eav-form.jsx';
+import Form from '../components/form.jsx';
 
-const styles = theme => ({
-	paper: {
-		width: '100%',
-		marginTop: theme.spacing.unit * 3,
-		overflowX: 'auto'
-	},
-	paperHeader: {
-		padding: theme.spacing.unit * 3,
-	},
-	button: {
-		margin: theme.spacing.unit,
-		marginTop: -44,
-		zIndex: 1400
-	},
-});
 class EAV extends Component {
-	componentDidMount() {
+	componentWillMount(){
 		var entityId = _.get(this, 'props.match.params.entityId');
 		if(entityId){
-			this.props.loadEntityData(entityId);
+			this.props.setEntityDataTypeID(entityId);
 		}
 	}
 	render() {
-		const classes = this.props.classes;
 		return (
-			<Navigation>
-				<Button fab color="accent" aria-label="add" className={classes.button}
-					onClick={() => this.props.navigateTo('/eav/' + _.get(this, 'props.entity.id') + '/new' )}>
-					<AddIcon />
-				</Button>
-				<Paper className={classes.paper}>
-					<div className={classes.paperHeader}>
-						<Typography type="title">{_.get(this, 'props.entity.name')}</Typography>
-					</div>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>ID</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{this.props.rows.map(row => {
-								return (
-									<TableRow key={row.id}>
-										<TableCell>{row.id}</TableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</Table>
-				</Paper>
-			</Navigation>
+			<Form 
+				save={this.props.save.bind(this)}
+				edit={this.props.edit.bind(this)}
+				create={this.props.create.bind(this)}
+				title={this.props.entity.name}
+				match={this.props.match}
+				content={<EAVForm />
+				}
+			/>
 		);
 	}
 }
 
 EAV.propTypes = {
-	classes: PropTypes.object.isRequired,
-	rows: PropTypes.array.isRequired,
+	save: PropTypes.func.isRequired,
+	name: PropTypes.string,
+	data: PropTypes.object,
+	edit: PropTypes.func.isRequired,
+	create: PropTypes.func.isRequired,
+	setEntityDataTypeID: PropTypes.func.isRequired,
 	entity: PropTypes.object,
-	loadEntityData: PropTypes.func.isRequired,
-	navigateTo: PropTypes.func.isRequired
+	match: PropTypes.object.isRequired
 };
 const mapStateToProps = (state) => {
+	let entity = _.find(state.entities.all, {
+		id: state.eav.entity
+	}) || {};
 	return {
-		rows: state.eav.rows,
-		entity: _.get(state, 'eav.entity')
+		data: state.eav.edit,
+		entity
 	};
 };
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		loadEntityData: function(entityId){
-			dispatch(loadEntityData(entityId));
+		save: () => {
+			dispatch(save());
 		},
-		navigateTo: function (route) {
-			dispatch(push(route));
+		edit: (id) => {
+			dispatch(editID(id));
+		},
+		create: () => {
+			dispatch(create());
+		},
+		setEntityDataTypeID: (entityId) => {
+			dispatch(setEntityDataTypeID(entityId));
 		}
 	};
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(EAV));
+export default connect(mapStateToProps, mapDispatchToProps)(EAV);

@@ -50,7 +50,6 @@ func TestEntityMigrator(t *testing.T) {
 	entity.Migrator(db)
 	assert.True(t, db.HasTable("entities"))
 	assert.True(t, db.HasTable("fields"))
-	assert.True(t, db.HasTable("eavs"))
 	entity.Teardown(db)
 	db.Close()
 	os.Remove("./testdb.db")

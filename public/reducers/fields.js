@@ -8,6 +8,9 @@ import {
 import {
 	CREATE_FIELD,
 } from '../actions/fields.js';
+import {
+	SET_ENTITY_DATA_TYPE
+} from '../actions/eav.js';
 import _ from 'lodash';
 const initialState = {
 	all: {},
@@ -28,6 +31,7 @@ export default function reducer(state = initialState, action = {}) {
 		return {
 			...state,
 			edit: {
+				...state.edit,
 				[action.field.id]: action.field
 			}
 		};
@@ -47,6 +51,11 @@ export default function reducer(state = initialState, action = {}) {
 		return {
 			...state,
 			edit: _.keyBy(action.entity.fields, 'id')
+		};
+	case SET_ENTITY_DATA_TYPE:
+		return {
+			...state,
+			all: _.extend({}, state.all, _.keyBy(action.entity.fields, 'id'))
 		};
 	default:
 		return state;

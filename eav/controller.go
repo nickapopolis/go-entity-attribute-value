@@ -1,4 +1,4 @@
-package entity
+package eav
 
 import (
 	"github.com/satori/go.uuid"
@@ -11,8 +11,8 @@ import (
 
 // Controller API route mux for Entity
 func Controller(router *mux.Router, db *gorm.DB) {
-	router.HandleFunc("/entity", indexHandler(db)).Methods("POST", "GET")
-	router.HandleFunc("/entity/{id}", loadUpdateHandler(db)).Methods("GET", "POST")
+	router.HandleFunc("/eav/{entityId}", indexHandler(db)).Methods("POST", "GET")
+	router.HandleFunc("/eav/{entityId}/{id}", loadUpdateHandler(db)).Methods("GET", "POST")
 }
 func indexHandler(db *gorm.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -35,43 +35,26 @@ func loadUpdateHandler(db *gorm.DB) func(w http.ResponseWriter, r *http.Request)
 	}
 }
 func createHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
 	decoder := json.NewDecoder(r.Body)
-	newEntity := Entity{}
-	err := decoder.Decode(&newEntity)
+	var newEntityData map[string]interface{}
+	err := decoder.Decode(&newEntityData)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 	}
-	db.NewRecord(newEntity)
-	db.Create(&newEntity)
-	if db.NewRecord(newEntity) {
-		http.Error(w, "Could not create Entity", 500)
-		return
+	entityId, err := uuid.FromString(vars["entityId"])
+	if err != nil {
+		http.Error(w, err.Error(), 400)
 	}
+	newEntity :=  EAVRecord{}
+	newEntity.SetEntityFromId(db, entityId)
+	newEntity.Create(db, newEntityData)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newEntity)
+	json.NewEncoder(w).Encode(newEntityData)
 }
 func listHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	entities := []Entity{}
-	db.Preload("Fields").Find(&entities)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(entities)
 }
 func loadHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := uuid.FromString(vars["id"])
-	loadEntity := Entity{ID: id}
-	db.Preload("Fields").First(&loadEntity)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(loadEntity)
 }
 func updateHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	updatedEntity := Entity{}
-	err := decoder.Decode(&updatedEntity)
-	if err != nil {
-		http.Error(w, err.Error(), 400)
-	}
-	db.Model(&updatedEntity).Update(&updatedEntity)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(updatedEntity)
 }

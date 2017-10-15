@@ -38,6 +38,8 @@ func testApiCreate(router *mux.Router, db *gorm.DB) func(*testing.T) {
 		assert.NotNil(t, newEntity)
 		assert.NotNil(t, newEntity.ID)
 		assert.NotNil(t, newEntity.Name)
+		assert.NotNil(t, newEntity.Fields)
+		assert.Equal(t, 3, len(newEntity.Fields))
 	}
 }
 func testApiList(router *mux.Router, db *gorm.DB) func(*testing.T) {
