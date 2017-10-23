@@ -65,6 +65,15 @@ func testApiCreate(router *mux.Router, db *gorm.DB) func(*testing.T) {
 }
 func testApiList(router *mux.Router, db *gorm.DB) func(*testing.T) {
 	return func(t *testing.T) {
+		newEntity := createEntity(router)
+		createEAV(router, &newEntity)
+		createEAV(router, &newEntity)
+
+		url := "http://localhost:3000/eav/" + newEntity.ID.String()
+		r, _ := http.NewRequest("GET", url, nil)
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, r)
+		assert.Equal(t, 200, w.Code)
 	}
 }
 func testApiLoad(router *mux.Router, db *gorm.DB) func(*testing.T) {
@@ -74,6 +83,18 @@ func testApiLoad(router *mux.Router, db *gorm.DB) func(*testing.T) {
 func testApiUpdate(router *mux.Router, db *gorm.DB) func(*testing.T) {
 	return func(t *testing.T) {
 	}
+}
+func createEAV(router *mux.Router, newEntity *entity.Entity){
+	newEav := map[string]interface{}{
+		newEntity.Fields[0].ID.String(): "John",
+		newEntity.Fields[1].ID.String(): "Smith",
+		newEntity.Fields[2].ID.String(): "jsmith@test.com",
+	}
+	url := "http://localhost:3000/eav/" + newEntity.ID.String()
+	responseBytes, _ := json.Marshal(&newEav)
+	r, _ := http.NewRequest("POST", url, bytes.NewBuffer(responseBytes))
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, r)
 }
 func createEntity(router *mux.Router) entity.Entity{
 	entityJSON := `{

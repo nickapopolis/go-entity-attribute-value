@@ -53,6 +53,16 @@ func createHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newEntityData)
 }
 func listHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	entityId, err := uuid.FromString(vars["entityId"])
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	listEntity :=  EAVRecord{}
+	listEntity.SetEntityFromId(db, entityId)
+	rows := listEntity.List(db)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(rows)
 }
 func loadHandler(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 }
