@@ -41,13 +41,14 @@ export function addEntity(entity) {
 	};
 }
 export const SAVE_ENTITY = 'SAVE_ENTITY';
-export function save(entity) {
-	var url = '/api/1.0/entity';
-	if(entity.createdAt){
-		url = url + '/' + entity.id;
-	}
+export function save() {
+	let url = '/api/1.0/entity';
 	return function(dispatch, getState){
-		var {fields} = getState();
+		let {fields, entities} = getState();
+		let entity = entities.edit;
+		if(entity.createdAt){
+			url = url + '/' + entity.id;
+		}
 		const body = {
 			...entity,
 			fields: _.values(fields.edit)

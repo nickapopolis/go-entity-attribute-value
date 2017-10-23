@@ -50,6 +50,39 @@ func TestEAVRecordCreate(t *testing.T) {
 
 	testTeardown(db)
 }
+func TestEAVRecordList(t *testing.T) {
+	db := testSetup(t)
+
+	//create a record
+	testEntity := entity.Entity{
+		Name: "Person",
+		ID: uuid.NewV4(),
+		Fields: []entity.Field{
+			{Name: "First", ID: uuid.NewV4()},
+			{Name: "Last", ID: uuid.NewV4()},
+			{Name: "Email", ID: uuid.NewV4()},
+		},
+	}
+	record := eav.EAVRecord{Entity: testEntity}
+	fieldValues := map[string]interface{}{
+		testEntity.Fields[0].ID.String(): "John",
+		testEntity.Fields[1].ID.String(): "Smith",
+		testEntity.Fields[2].ID.String(): "jsmith@test.com",
+	}
+	record.Create(db, fieldValues)
+
+	record = eav.EAVRecord{Entity: testEntity}
+	fieldValues = map[string]interface{}{
+		testEntity.Fields[0].ID.String(): "Jane",
+		testEntity.Fields[1].ID.String(): "Doe",
+		testEntity.Fields[2].ID.String(): "jdoe@test.com",
+	}
+	record.Create(db, fieldValues)
+	records := record.List(db)
+	assert.Equal(t, 2, len(records))
+
+	testTeardown(db)
+}
 func testSetup(t *testing.T) *gorm.DB{
 	db, err := gorm.Open("sqlite3", "testeavcreate.db")
 	assert.Nil(t, err)

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Navigation from './navigation.jsx';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
-import {setEntityDataTypeID} from '../actions/eav';
+import {listEntityData, setEntityDataTypeID} from '../actions/eav';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import { push } from 'react-router-redux';
@@ -28,11 +28,9 @@ const styles = theme => ({
 	},
 });
 class EAVList extends Component {
-	componentDidMount() {
-		var entityId = _.get(this, 'props.match.params.entityId');
-		if(entityId){
-			this.props.setEntityDataTypeID(entityId);
-		}
+	componentDidUpdate() {
+		let entityId = _.get(this, 'props.match.params.entityId');
+		this.props.listEntityData(entityId);
 	}
 	render() {
 		const classes = this.props.classes;
@@ -55,11 +53,11 @@ class EAVList extends Component {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{this.props.rows.map(row => {
+							{this.props.rows && this.props.rows.map(row => {
 								return (
 									<TableRow key={row.id}>
-										{_.map(_.get(this.props.fields), (field)=>{
-											return <TableCell>{row[field.name]}</TableCell>;
+										{_.map(this.props.fields, (field)=>{
+											return <TableCell key={field.id}>{row[field.id]}</TableCell>;
 										})}
 									</TableRow>
 								);
@@ -74,11 +72,12 @@ class EAVList extends Component {
 
 EAVList.propTypes = {
 	classes: PropTypes.object.isRequired,
-	rows: PropTypes.array.isRequired,
+	rows: PropTypes.array,
 	entity: PropTypes.object,
 	fields: PropTypes.array,
-	setEntityDataTypeID: PropTypes.func.isRequired,
-	navigateTo: PropTypes.func.isRequired
+	listEntityData: PropTypes.func.isRequired,
+	navigateTo: PropTypes.func.isRequired,
+	match: PropTypes.object.isRequired
 };
 const mapStateToProps = (state) => {
 	let entity = _.find(state.entities.all, {
@@ -98,8 +97,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		setEntityDataTypeID: function(entityId){
-			dispatch(setEntityDataTypeID(entityId));
+		listEntityData: function(entityId){
+			dispatch(listEntityData(entityId));
 		},
 		navigateTo: function (route) {
 			dispatch(push(route));

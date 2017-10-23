@@ -1,14 +1,22 @@
 import { push } from 'react-router-redux';
 import { pushError } from './errors.js';
 import uuid from 'uuid';
-export const LOAD_ENTITY_DATA = 'LOAD_ENTITY_DATA';
-export function loadEntityData(entityId) {
-	return async function (dispatch) {
-		var entityDataJSON = [
-			{id: '1', field: 'field1'},
-			{id: '2', field: 'field2'}
-		];
-		dispatch(setEntityData(entityDataJSON));
+export const LIST_ENTITY_DATA = 'LIST_ENTITY_DATA';
+export function listEntityData(entityId) {
+	return async function (dispatch, getState) {
+		let state = getState();
+		if(state.eav.entity !== entityId){
+			await dispatch(setEntityDataTypeID(entityId));
+		}
+		state = getState();
+		if(!state.eav.rows){
+			let response = await fetch('/api/1.0/eav/' + entityId, {
+				method: 'GET',
+				type: 'application/json'
+			});
+			let entityDataJSON = await response.json();
+			dispatch(setEntityData(entityDataJSON));
+		}
 	};
 }
 export const SET_ENTITY_DATA_TYPE_ID = 'SET_ENTITY_DATA_TYPE_ID';

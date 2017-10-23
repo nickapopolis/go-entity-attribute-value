@@ -5,7 +5,7 @@ import {
 } from '../actions/eav.js';
 import { SET_FIELD_VALUE } from '../actions/forms.js';
 const initialState = {
-	rows: [],
+	rows: null,
 	entity: null,
 	edit: {}
 };
@@ -14,7 +14,8 @@ export default function reducer(state = initialState, action = {}) {
 	case SET_ENTITY_DATA_TYPE:
 		return {
 			...state,
-			entity: action.entity.id
+			entity: action.entity.id,
+			rows: null
 		};
 	case SET_ENTITY_DATA:
 		return {
